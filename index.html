@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .sidebar-item:hover { background-color: rgba(255,255,255,0.1); }
+        .loading {
+            @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+        }
+        .loading::after {
+            content: "";
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="bg-blue-800 text-white w-64 flex-shrink-0 hidden md:block">
+            <div class="p-4">
+                <h1 class="text-xl font-bold">Healthcare System</h1>
+            </div>
+            <nav class="mt-4">
+                <a href="#" class="sidebar-item block p-4 hover:bg-blue-700" onclick="showSection('dashboard')">
+                    <i class="bi bi-house-door mr-2"></i> Dashboard
+                </a>
+                <a href="#" class="sidebar-item block p-4 hover:bg-blue-700" onclick="showSection('registration')">
+                    <i class="bi bi-person-plus mr-2"></i> Registration
+                </a>
+                <a href="#" class="sidebar-item block p-4 hover:bg-blue-700" onclick="showSection('patients')">
+                    <i class="bi bi-people mr-2"></i> Patient List
+                </a>
+                <a href="#" class="sidebar-item block p-4 hover:bg-blue-700" onclick="showSection('inventory')">
+                    <i class="bi bi-box-seam mr-2"></i> Inventory
+                </a>
+                <a href="#" class="sidebar-item block p-4 hover:bg-blue-700" onclick="showSection('appointments')">
+                    <i class="bi bi-calendar-check mr-2"></i> Appointments
+                </a>
+                <a href="#" class="sidebar-item block p-4 hover:bg-blue-700" onclick="showSection('billing')">
+                    <i class="bi bi-receipt mr-2"></i> Billing
+                </a>
+                <a href="#" class="sidebar-item block p-4 hover:bg-blue-700" onclick="showSection('reports')">
+                    <i class="bi bi-file-earmark-text mr-2"></i> Reports
+                </a>
+            </nav>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div class="md:hidden fixed bottom-0 w-full bg-blue-800 text-white">
+            <div class="flex justify-around p-4">
+                <button onclick="showSection('dashboard')" class="focus:outline-none">
+                    <i class="bi bi-house-door"></i>
+                </button>
+                <button onclick="showSection('patients')" class="focus:outline-none">
+                    <i class="bi bi-people"></i>
+                </button>
+                <button onclick="showSection('appointments')" class="focus:outline-none">
+                    <i class="bi bi-calendar-check"></i>
+                </button>
+                <button onclick="showMobileMenu()" class="focus:outline-none">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow p-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <button class="md:hidden mr-4" onclick="showMobileMenu()">
+                            <i class="bi bi-list text-2xl"></i>
+                        </button>
+                        <h2 id="sectionTitle" class="text-xl font-semibold">Dashboard</h2>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="mr-4">Dr. John Doe</span>
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded">
+                            <i class="bi bi-person-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div id="dashboardSection" class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Stats Cards -->
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <div class="flex items-center">
+                            <div class="bg-blue-500 p-3 rounded-full">
+                                <i class="bi bi-people text-white text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-gray-500">Total Patients</h3>
+                                <p class="text-2xl font-bold">1,234</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <div class="flex items-center">
+                            <div class="bg-green-500 p-3 rounded-full">
+                                <i class="bi bi-calendar-check text-white text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-gray-500">Today's Appointments</h3>
+                                <p class="text-2xl font-bold">23</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <div class="flex items-center">
+                            <div class="bg-yellow-500 p-3 rounded-full">
+                                <i class="bi bi-currency-dollar text-white text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-gray-500">Revenue</h3>
+                                <p class="text-2xl font-bold">$12,345</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <div class="flex items-center">
+                            <div class="bg-red-500 p-3 rounded-full">
+                                <i class="bi bi-bell text-white text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-gray-500">Alerts</h3>
+                                <p class="text-2xl font-bold">5</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="mt-8 bg-white rounded-lg shadow">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-4">Recent Activities</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="bg-gray-50">
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Activity</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="activitiesTable">
+                                    <!-- Activities will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Modal -->
+    <div id="mobileMenu" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="bg-white w-64 h-full">
+            <div class="p-4 bg-blue-800 text-white">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold">Menu</h2>
+                    <button onclick="hideMobileMenu()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <nav class="p-4">
+                <!-- Mobile menu items -->
+            </nav>
+        </div>
+    </div>
+
+    <script>
+        // Initialize data store
+        const state = {
+            activities: [],
+            loading: false
+        };
+
+        // Show loading state
+        function showLoading() {
+            state.loading = true;
+            const loader = document.createElement('div');
+            loader.className = 'loading';
+            document.body.appendChild(loader);
+        }
+
+        // Hide loading state
+        function hideLoading() {
+            state.loading = false;
+            const loader = document.querySelector('.loading');
+            if (loader) loader.remove();
+        }
+
+        // Fetch activities from MongoDB
+        async function fetchActivities() {
+            showLoading();
+            try {
+                const response = await fetch('https://r0c8kgwocscg8gsokogwwsw4.zetaverse.one/mongodb', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer zaHe1yi4jxP0tAUP2qc8GTy9NEH2',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        appSlug: 'my-app-database-1234',
+                        action: 'read',
+                        collection: 'activities',
+                        conditions: {}
+                    })
+                });
+                const data = await response.json();
+                state.activities = data.result;
+                renderActivities();
+            } catch (error) {
+                console.error('Error fetching activities:', error);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Render activities in the table
+        function renderActivities() {
+            const tbody = document.getElementById('activitiesTable');
+            tbody.innerHTML = state.activities.map(activity => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">${activity.patient}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${activity.activity}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${activity.time}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-${activity.status === 'completed' ? 'green' : 'yellow'}-100 text-${activity.status === 'completed' ? 'green' : 'yellow'}-800">
+                            ${activity.status}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Navigation functions
+        function showSection(section) {
+            document.getElementById('sectionTitle').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+            hideMobileMenu();
+        }
+
+        function showMobileMenu() {
+            document.getElementById('mobileMenu').classList.remove('hidden');
+        }
+
+        function hideMobileMenu() {
+            document.getElementById('mobileMenu').classList.add('hidden');
+        }
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchActivities();
+        });
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
